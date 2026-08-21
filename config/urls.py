@@ -40,10 +40,6 @@ urlpatterns = [
         admin.site.urls,
     ),
     
-    path(
-     "super-admin/",
-     include("apps.saas_admin.urls"),
-    ),
 ]
 
 

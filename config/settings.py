@@ -33,27 +33,29 @@ DEBUG = os.getenv(
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-
-    # Produção
-    "app.barberagenda.com.br",
-
-    # Render
     ".onrender.com",
-
-    # Railway, caso utilize futuramente
-    ".railway.app",
+    "app.barberagenda.com.br",
 ]
 
 
+RENDER_EXTERNAL_HOSTNAME = os.getenv(
+    "RENDER_EXTERNAL_HOSTNAME"
+)
+
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(
+        RENDER_EXTERNAL_HOSTNAME
+    )
+
+
 CSRF_TRUSTED_ORIGINS = [
-    "https://app.barberagenda.com.br",
     "https://*.onrender.com",
-    "https://*.railway.app",
+    "https://app.barberagenda.com.br",
 ]
 
 
 # ============================================================
-# APLICAÇÕES
+# APPS
 # ============================================================
 
 INSTALLED_APPS = [
@@ -65,19 +67,19 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     # Projeto
-    "apps.core.apps.CoreConfig",
     "apps.accounts.apps.AccountsConfig",
     "apps.barbershops.apps.BarbershopsConfig",
-    "apps.customers.apps.CustomersConfig",
-    "apps.services.apps.ServicesConfig",
     "apps.professionals.apps.ProfessionalsConfig",
+    "apps.services.apps.ServicesConfig",
     "apps.bookings.apps.BookingsConfig",
+    "apps.customers.apps.CustomersConfig",
     "apps.dashboard.apps.DashboardConfig",
-    "apps.subscriptions.apps.SubscriptionsConfig",
-    "apps.onboarding.apps.OnboardingConfig",
-    "apps.public.apps.PublicConfig",
 
-    # Super Admin SaaS
+    # SaaS
+    "apps.core.apps.CoreConfig",
+    "apps.subscriptions.apps.SubscriptionsConfig",
+
+    # Super Admin
     "apps.saas_admin.apps.SaasAdminConfig",
 ]
 
@@ -89,7 +91,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 
-    # WhiteNoise precisa ficar logo após SecurityMiddleware
+    # Static files no Render
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -103,6 +105,16 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+
+# IMPORTANTE:
+# NÃO coloque AppConfig dentro do MIDDLEWARE.
+#
+# ERRADO:
+#
+# "apps.subscriptions.apps.SubscriptionsConfig"
+# "apps.onboarding.apps.OnboardingConfig"
+# "apps.saas_admin.apps.SaasAdminConfig"
 
 
 # ============================================================
@@ -121,8 +133,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": (
-            "django.template.backends."
-            "django.DjangoTemplates"
+            "django.template.backends.django."
+            "DjangoTemplates"
         ),
 
         "DIRS": [
@@ -133,11 +145,18 @@ TEMPLATES = [
 
         "OPTIONS": {
             "context_processors": [
-                "django.template.context_processors.request",
-
-                "django.contrib.auth.context_processors.auth",
-
-                "django.contrib.messages.context_processors.messages",
+                (
+                    "django.template.context_processors."
+                    "request"
+                ),
+                (
+                    "django.contrib.auth."
+                    "context_processors.auth"
+                ),
+                (
+                    "django.contrib.messages."
+                    "context_processors.messages"
+                ),
             ],
         },
     },
@@ -145,35 +164,41 @@ TEMPLATES = [
 
 
 # ============================================================
-# BANCO DE DADOS
+# DATABASE
 # ============================================================
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+import os
 
-if DATABASE_URL:
-    # Produção: PostgreSQL
+
+if os.getenv("RDS_HOSTNAME"):
     DATABASES = {
-        "default": dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ["RDS_DB_NAME"],
+            "USER": os.environ["RDS_USERNAME"],
+            "PASSWORD": os.environ["RDS_PASSWORD"],
+            "HOST": os.environ["RDS_HOSTNAME"],
+            "PORT": os.getenv(
+                "RDS_PORT",
+                "5432",
+            ),
+            "CONN_MAX_AGE": 600,
+        }
     }
 
 else:
-    # Desenvolvimento local: SQLite
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
 
 
 # ============================================================
-# VALIDAÇÃO DE SENHA
+# PASSWORD VALIDATION
 # ============================================================
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -218,7 +243,7 @@ USE_TZ = True
 
 
 # ============================================================
-# ARQUIVOS ESTÁTICOS
+# STATIC FILES
 # ============================================================
 
 STATIC_URL = "/static/"
@@ -226,26 +251,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
-STATICFILES_DIRS = []
-
-if (BASE_DIR / "static").exists():
-    STATICFILES_DIRS.append(
-        BASE_DIR / "static"
-    )
-
-
-# ============================================================
-# STORAGE
-# ============================================================
-
 STORAGES = {
-    "default": {
-        "BACKEND": (
-            "django.core.files.storage."
-            "FileSystemStorage"
-        ),
-    },
-
     "staticfiles": {
         "BACKEND": (
             "whitenoise.storage."
@@ -253,6 +259,15 @@ STORAGES = {
         ),
     },
 }
+
+
+# Caso você tenha uma pasta /static na raiz
+STATICFILES_DIRS = []
+
+if (BASE_DIR / "static").exists():
+    STATICFILES_DIRS.append(
+        BASE_DIR / "static"
+    )
 
 
 # ============================================================
@@ -279,8 +294,9 @@ LOGOUT_REDIRECT_URL = "login"
 # EMAIL
 # ============================================================
 
-EMAIL_BACKEND = (
-    "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = os.getenv(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend",
 )
 
 
@@ -288,11 +304,13 @@ EMAIL_BACKEND = (
 # DEFAULT PRIMARY KEY
 # ============================================================
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = (
+    "django.db.models.BigAutoField"
+)
 
 
 # ============================================================
-# PRODUÇÃO / HTTPS
+# SEGURANÇA EM PRODUÇÃO
 # ============================================================
 
 if not DEBUG:
@@ -308,31 +326,35 @@ if not DEBUG:
         "https",
     )
 
-    SECURE_HSTS_SECONDS = 31536000
-
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-
-    SECURE_HSTS_PRELOAD = True
+    X_FRAME_OPTIONS = "DENY"
 
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
-
-# ============================================================
-# BARBERAGENDA
-# ============================================================
-
-# Trial padrão do SaaS
-BARBERAGENDA_TRIAL_DAYS = 7
+    SECURE_REFERRER_POLICY = (
+        "strict-origin-when-cross-origin"
+    )
 
 
-# ============================================================
-# UPLOADS
-# ============================================================
+DEBUG = os.getenv(
+    "DEBUG",
+    "True",
+).lower() == "true"
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = (
-    5 * 1024 * 1024
+
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "dev-only-secret",
 )
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = (
-    10 * 1024 * 1024
-)
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".elasticbeanstalk.com",
+    "app.barberagenda.com.br",
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://app.barberagenda.com.br",
+]
