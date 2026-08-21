@@ -1,0 +1,164 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Serviços
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>✂️ Serviços</h1>
+
+        <p>
+            Gerencie os serviços da sua barbearia.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'dashboard:service_create' %}"
+        class="btn"
+    >
+        + Novo serviço
+    </a>
+
+</div>
+
+
+<div class="panel">
+
+{% if services %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Serviço</th>
+                    <th>Duração</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for service in services %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            {{ service.name }}
+                        </strong>
+
+                        {% if service.description %}
+
+                            <div
+                                style="
+                                    color:var(--muted);
+                                    margin-top:4px;
+                                    font-size:12px;
+                                "
+                            >
+                                {{ service.description|truncatechars:60 }}
+                            </div>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ service.duration_minutes }} min
+                    </td>
+
+                    <td>
+                        R$ {{ service.price|floatformat:2 }}
+                    </td>
+
+                    <td>
+
+                        {% if service.active %}
+
+                            <span class="badge status-completed">
+                                Ativo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge status-cancelled">
+                                Inativo
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <div
+                            style="
+                                display:flex;
+                                gap:8px;
+                                flex-wrap:wrap;
+                            "
+                        >
+
+                            <a
+                                href="{% url 'dashboard:service_update' service.pk %}"
+                                class="btn btn-secondary"
+                            >
+                                Editar
+                            </a>
+
+                            <a
+                                href="{% url 'dashboard:service_delete' service.pk %}"
+                                class="btn btn-danger"
+                            >
+                                Excluir
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+{% else %}
+
+    <div class="empty">
+
+        <h2>
+            Nenhum serviço cadastrado
+        </h2>
+
+        <p>
+            Cadastre o primeiro serviço da barbearia.
+        </p>
+
+        <a
+            href="{% url 'dashboard:service_create' %}"
+            class="btn"
+        >
+            + Novo serviço
+        </a>
+
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

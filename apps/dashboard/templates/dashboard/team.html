@@ -1,0 +1,133 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Equipe{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>👨‍👩‍👦 Equipe</h1>
+
+        <p>
+            Gerencie usuários, funções e acessos
+            da sua barbearia.
+        </p>
+    </div>
+
+    <a href="{% url 'dashboard:team_create' %}" class="btn">
+        + Adicionar membro
+    </a>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Membros da equipe</h2>
+    </div>
+
+    {% if memberships %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Perfil</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for membership in memberships %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {% if membership.user.first_name %}
+                                {{ membership.user.first_name }}
+                            {% else %}
+                                {{ membership.user.username }}
+                            {% endif %}
+                        </strong>
+
+                        {% if membership.user == request.user %}
+                            <span class="badge">
+                                Você
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ membership.user.email|default:"—" }}
+                    </td>
+
+                    <td>
+                        <span class="badge">
+                            {{ membership.get_role_display }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if membership.active %}
+                            <span class="badge status-completed">
+                                Ativo
+                            </span>
+                        {% else %}
+                            <span class="badge status-cancelled">
+                                Inativo
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{% url 'dashboard:team_update' membership.pk %}"
+                            class="btn btn-secondary"
+                        >
+                            Editar
+                        </a>
+
+                        {% if membership.user != request.user %}
+
+                            <a
+                                href="{% url 'dashboard:team_delete' membership.pk %}"
+                                class="btn btn-danger"
+                            >
+                                Remover
+                            </a>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+        <div class="empty">
+            Nenhum membro encontrado.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,409 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Configurações
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>⚙️ Configurações</h1>
+
+        <p>
+            Gerencie sua conta, preferências e acesso ao BarberAgenda.
+        </p>
+    </div>
+
+</div>
+
+
+<div
+    style="
+        display:grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(320px, 1fr));
+        gap:20px;
+    "
+>
+
+    <!-- CONTA -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>👤 Minha Conta</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="form-group">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    type="text"
+                    value="{{ request.user.first_name|default:'' }}"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Usuário
+                </label>
+
+                <input
+                    type="text"
+                    value="{{ request.user.username }}"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    E-mail
+                </label>
+
+                <input
+                    type="email"
+                    value="{{ request.user.email|default:'' }}"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Perfil
+                </label>
+
+                <input
+                    type="text"
+                    value="{% if request.membership %}{{ request.membership.get_role_display }}{% else %}—{% endif %}"
+                    disabled
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BARBEARIA -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>🏪 Barbearia</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="form-group">
+
+                <label>
+                    Barbearia atual
+                </label>
+
+                <input
+                    type="text"
+                    value="{{ request.barbershop.name }}"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Identificador público
+                </label>
+
+                <input
+                    type="text"
+                    value="{{ request.barbershop.slug }}"
+                    disabled
+                >
+
+            </div>
+
+
+            {% if request.membership.can_manage_barbershop %}
+
+                <a
+                    href="{% url 'dashboard:barbershop_settings' %}"
+                    class="btn"
+                >
+                    Gerenciar Minha Barbearia
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- SEGURANÇA -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>🔐 Segurança</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <p style="color:var(--muted); line-height:1.6;">
+                Mantenha sua conta protegida atualizando sua senha
+                sempre que necessário.
+            </p>
+
+
+            <a
+                href="{% url 'password_change' %}"
+                class="btn btn-secondary"
+            >
+                Alterar senha
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ASSINATURA -->
+    {% if request.user.is_superuser or request.membership.can_manage_subscription %}
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>💳 Plano e Cobrança</h2>
+        </div>
+
+        <div class="panel-body">
+
+            {% if request.barbershop.subscription %}
+
+                <p>
+                    <strong>
+                        Plano atual
+                    </strong>
+                </p>
+
+                <h2>
+                    {{ request.barbershop.subscription.plan.name }}
+                </h2>
+
+
+                <span
+                    class="
+                        badge
+                        status-{{ request.barbershop.subscription.status }}
+                    "
+                >
+                    {{ request.barbershop.subscription.get_status_display }}
+                </span>
+
+            {% else %}
+
+                <div class="message warning">
+                    Nenhuma assinatura encontrada.
+                </div>
+
+            {% endif %}
+
+
+            <div style="margin-top:20px;">
+
+                <a
+                    href="{% url 'dashboard:subscription' %}"
+                    class="btn"
+                >
+                    Gerenciar plano
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- PÁGINA PÚBLICA -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>🌐 Página Pública</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <p style="color:var(--muted);">
+                Página pública disponível para seus clientes:
+            </p>
+
+
+            <div class="form-group">
+
+                <input
+                    id="publicPageUrl"
+                    type="text"
+                    readonly
+                    value="{{ request.scheme }}://{{ request.get_host }}/b/{{ request.barbershop.slug }}/"
+                >
+
+            </div>
+
+
+            <div
+                style="
+                    display:flex;
+                    gap:10px;
+                    flex-wrap:wrap;
+                "
+            >
+
+                <a
+                    href="/b/{{ request.barbershop.slug }}/"
+                    target="_blank"
+                    class="btn btn-secondary"
+                >
+                    Abrir página
+                </a>
+
+
+                <button
+                    type="button"
+                    class="btn"
+                    onclick="copyPublicPage()"
+                >
+                    Copiar link
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SISTEMA -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>🖥️ Sistema</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <p>
+                <strong>
+                    BarberAgenda
+                </strong>
+            </p>
+
+            <p style="color:var(--muted);">
+                Sistema de gestão e agendamento para barbearias.
+            </p>
+
+
+            <div class="form-group">
+
+                <label>
+                    Versão
+                </label>
+
+                <input
+                    type="text"
+                    value="1.0.0"
+                    disabled
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>🚪 Sessão</h2>
+    </div>
+
+    <div class="panel-body">
+
+        <p style="color:var(--muted);">
+            Encerre sua sessão neste dispositivo.
+        </p>
+
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+                Sair da conta
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+function copyPublicPage() {
+
+    const input =
+        document.getElementById(
+            "publicPageUrl"
+        );
+
+    if (!input) {
+        return;
+    }
+
+    navigator.clipboard
+        .writeText(input.value)
+        .then(function () {
+
+            alert(
+                "Link copiado!"
+            );
+
+        });
+
+}
+
+</script>
+
+{% endblock %}

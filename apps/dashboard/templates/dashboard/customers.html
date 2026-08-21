@@ -1,0 +1,105 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>👥 Clientes</h1>
+
+        <p>
+            Gerencie os clientes da sua barbearia.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <h2>
+            Clientes cadastrados
+        </h2>
+
+        <span class="badge">
+            {{ customers|length }}
+        </span>
+
+    </div>
+
+
+    {% if customers %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Telefone</th>
+                        <th>E-mail</th>
+                        <th>Cadastro</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for customer in customers %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ customer.name }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ customer.phone }}
+                            </td>
+
+                            <td>
+                                {{ customer.email|default:"—" }}
+                            </td>
+
+                            <td>
+                                {{ customer.created_at|date:"d/m/Y" }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+
+            <h2>
+                Nenhum cliente cadastrado
+            </h2>
+
+            <p>
+                Os clientes aparecerão aqui
+                conforme forem realizados agendamentos.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

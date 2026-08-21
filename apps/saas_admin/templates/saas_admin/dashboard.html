@@ -1,0 +1,164 @@
+{% extends "saas_admin/base.html" %}
+
+{% block title %}
+Dashboard Global
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Dashboard Global</h1>
+
+        <p>
+            Visão geral da plataforma BarberAgenda.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Barbearias
+        </div>
+
+        <div class="stat-value">
+            {{ total_barbershops }}
+        </div>
+
+        <div class="stat-detail">
+            {{ active_barbershops }}
+            ativas
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Usuários
+        </div>
+
+        <div class="stat-value">
+            {{ total_users }}
+        </div>
+
+        <div class="stat-detail">
+            Contas cadastradas
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Assinaturas
+        </div>
+
+        <div class="stat-value">
+            {{ active_subscriptions }}
+        </div>
+
+        <div class="stat-detail">
+            Assinaturas ativas
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            MRR
+        </div>
+
+        <div class="stat-value">
+            R$ {{ mrr|floatformat:2 }}
+        </div>
+
+        <div class="stat-detail">
+            Receita recorrente mensal
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Indicadores SaaS</h2>
+    </div>
+
+    <div class="panel-body">
+
+        <div
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(auto-fit,minmax(200px,1fr));
+                gap:15px;
+            "
+        >
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Trials ativos
+                </div>
+
+                <div class="stat-value">
+                    {{ trials }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Conversão
+                </div>
+
+                <div class="stat-value">
+                    —
+                </div>
+
+                <div class="stat-detail">
+                    Trial → Assinatura
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Churn
+                </div>
+
+                <div class="stat-value">
+                    —
+                </div>
+
+                <div class="stat-detail">
+                    Cancelamentos mensais
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

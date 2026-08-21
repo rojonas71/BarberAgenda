@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            BarberAgenda
+        {% endblock %}
+    </title>
+
+    <style>
+        :root {
+            --bg: #090909;
+            --card: #151515;
+            --border: #292929;
+            --text: #ffffff;
+            --muted: #9b9b9b;
+            --gold: #d4af37;
+            --gold-dark: #98751a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                system-ui,
+                sans-serif;
+
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .container {
+            width: min(
+                1180px,
+                92%
+            );
+
+            margin: 0 auto;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+
+            background:
+                rgba(9, 9, 9, .9);
+
+            border-bottom:
+                1px solid var(--border);
+
+            backdrop-filter:
+                blur(14px);
+        }
+
+        .navbar-content {
+            min-height: 72px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+        .logo {
+            text-decoration: none;
+
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+
+            gap: 18px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--muted);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 44px;
+
+            padding:
+                10px 18px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--gold),
+                    var(--gold-dark)
+                );
+
+            color: #050505;
+
+            text-decoration: none;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+
+            border:
+                1px solid var(--border);
+        }
+
+        .hero {
+            padding:
+                100px 0 80px;
+
+            text-align: center;
+        }
+
+        .hero h1 {
+            max-width: 900px;
+
+            margin:
+                0 auto 22px;
+
+            font-size:
+                clamp(
+                    42px,
+                    8vw,
+                    78px
+                );
+
+            line-height: 1;
+
+            letter-spacing:
+                -3px;
+        }
+
+        .hero p {
+            max-width: 700px;
+
+            margin:
+                0 auto 30px;
+
+            color: var(--muted);
+
+            font-size: 19px;
+
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+        .section {
+            padding:
+                70px 0;
+        }
+
+        .section-title {
+            text-align: center;
+
+            margin-bottom: 35px;
+        }
+
+        .section-title h2 {
+            margin-bottom: 10px;
+
+            font-size: 38px;
+        }
+
+        .section-title p {
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(
+                        240px,
+                        1fr
+                    )
+                );
+
+            gap: 18px;
+        }
+
+        .card {
+            padding: 25px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 16px;
+
+            background: var(--card);
+        }
+
+        .card p {
+            color: var(--muted);
+
+            line-height: 1.6;
+        }
+
+        .price {
+            font-size: 34px;
+            font-weight: 900;
+        }
+
+        .footer {
+            padding: 35px 0;
+
+            border-top:
+                1px solid var(--border);
+
+            color: var(--muted);
+
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+
+            min-height: 45px;
+
+            padding:
+                11px 13px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            background: #101010;
+
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: 700;
+
+            font-size: 13px;
+        }
+
+        @media(max-width: 720px) {
+            .nav a:not(.btn) {
+                display: none;
+            }
+
+            .hero {
+                padding:
+                    65px 0 50px;
+            }
+
+            .hero h1 {
+                letter-spacing:
+                    -1px;
+            }
+        }
+    </style>
+
+    {% block extra_css %}
+    {% endblock %}
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="
+        container
+        navbar-content
+    ">
+
+        <a
+            href="{% url 'public:home' %}"
+            class="logo"
+        >
+            Barber<span>Agenda</span>
+        </a>
+
+
+        <nav class="nav">
+
+            <a
+                href="{% url 'public:plans' %}"
+            >
+                Planos
+            </a>
+
+            {% if request.user.is_authenticated %}
+
+                <a
+                    href="{% url 'dashboard:home' %}"
+                    class="btn"
+                >
+                    Dashboard
+                </a>
+
+            {% else %}
+
+                <a
+                    href="{% url 'login' %}"
+                >
+                    Entrar
+                </a>
+
+                <a
+                    href="{% url 'public:register' %}"
+                    class="btn"
+                >
+                    Criar conta
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+{% block content %}
+{% endblock %}
+
+
+<footer class="footer">
+
+    <div class="container">
+        © {% now "Y" %}
+        BarberAgenda
+    </div>
+
+</footer>
+
+</body>
+</html>

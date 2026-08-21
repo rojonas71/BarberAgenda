@@ -1,0 +1,114 @@
+{% extends "saas_admin/base.html" %}
+
+{% block title %}
+Usuários
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>👥 Usuários</h1>
+
+        <p>
+            Usuários cadastrados no BarberAgenda.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+{% if users %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>E-mail</th>
+                    <th>Status</th>
+                    <th>Cadastro</th>
+                    <th>Super Admin</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for user in users %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ user.username }}
+                        </strong>
+
+                        {% if user.first_name %}
+                            <div style="color:var(--muted);">
+                                {{ user.first_name }}
+                            </div>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ user.email|default:"—" }}
+                    </td>
+
+                    <td>
+
+                        {% if user.is_active %}
+
+                            <span class="badge status-active">
+                                Ativo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge status-cancelled">
+                                Inativo
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ user.date_joined|date:"d/m/Y H:i" }}
+                    </td>
+
+                    <td>
+
+                        {% if user.is_superuser %}
+                            ✅
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+{% else %}
+
+    <div class="empty">
+        Nenhum usuário cadastrado.
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

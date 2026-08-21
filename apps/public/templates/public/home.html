@@ -1,0 +1,204 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}
+BarberAgenda — Sistema para Barbearias
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="container">
+
+        <div
+            style="
+                color:var(--gold);
+                font-weight:800;
+                margin-bottom:14px;
+            "
+        >
+            SOFTWARE PARA BARBEARIAS
+        </div>
+
+        <h1>
+            Sua barbearia organizada.
+            Sua agenda trabalhando por você.
+        </h1>
+
+        <p>
+            Gerencie agendamentos,
+            clientes, profissionais,
+            serviços e horários
+            em um único sistema.
+        </p>
+
+        <div class="hero-actions">
+
+            <a
+                href="{% url 'public:register' %}"
+                class="btn"
+            >
+                Começar grátis
+            </a>
+
+            <a
+                href="{% url 'public:plans' %}"
+                class="btn btn-secondary"
+            >
+                Ver planos
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>
+                Tudo que sua barbearia precisa
+            </h2>
+
+            <p>
+                Da agenda ao relacionamento
+                com seus clientes.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>📅 Agenda inteligente</h3>
+
+                <p>
+                    Horários disponíveis,
+                    bloqueios e prevenção
+                    automática de conflitos.
+                </p>
+            </div>
+
+
+            <div class="card">
+                <h3>👥 Clientes</h3>
+
+                <p>
+                    Histórico, visitas,
+                    contatos e relacionamento.
+                </p>
+            </div>
+
+
+            <div class="card">
+                <h3>💈 Profissionais</h3>
+
+                <p>
+                    Organize equipe,
+                    serviços e horários.
+                </p>
+            </div>
+
+
+            <div class="card">
+                <h3>📊 Gestão</h3>
+
+                <p>
+                    Dashboard,
+                    faturamento e relatórios.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>Planos</h2>
+
+            <p>
+                Escolha o plano ideal
+                para sua barbearia.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            {% for plan in plans %}
+
+                <div class="card">
+
+                    <h3>
+                        {{ plan.name }}
+                    </h3>
+
+                    <div class="price">
+                        R$
+                        {{ plan.price|floatformat:2 }}
+                    </div>
+
+                    <p>
+                        por mês
+                    </p>
+
+                    <p>
+                        Até
+                        {{ plan.max_professionals }}
+                        profissionais
+                    </p>
+
+                    <p>
+                        Até
+                        {{ plan.max_services }}
+                        serviços
+                    </p>
+
+                    <a
+                        href="{% url 'public:register' %}"
+                        class="btn"
+                    >
+                        Começar
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <div class="card">
+
+                    <h3>
+                        Planos em configuração
+                    </h3>
+
+                    <p>
+                        Os planos serão exibidos
+                        em breve.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Bloqueios{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>🚫 Bloqueios</h1>
+
+        <p>
+            Gerencie folgas, compromissos,
+            férias e indisponibilidades.
+        </p>
+    </div>
+
+    <a href="{% url 'dashboard:block_create' %}" class="btn">
+        + Novo bloqueio
+    </a>
+
+</div>
+
+<div class="panel">
+
+    {% if blocks %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Profissional</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Motivo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for block in blocks %}
+
+                <tr>
+
+                    <td>
+                        {{ block.professional.name }}
+                    </td>
+
+                    <td>
+                        {{ block.date|date:"d/m/Y" }}
+                    </td>
+
+                    <td>
+                        {{ block.start_time|time:"H:i" }}
+                        —
+                        {{ block.end_time|time:"H:i" }}
+                    </td>
+
+                    <td>
+                        {{ block.reason|default:"—" }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{% url 'dashboard:block_update' block.pk %}"
+                            class="btn btn-secondary"
+                        >
+                            Editar
+                        </a>
+
+                        <a
+                            href="{% url 'dashboard:block_delete' block.pk %}"
+                            class="btn btn-danger"
+                        >
+                            Excluir
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+        <div class="empty">
+            Nenhum bloqueio cadastrado.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

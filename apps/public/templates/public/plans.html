@@ -1,0 +1,109 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}
+Planos
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>
+                Planos BarberAgenda
+            </h2>
+
+            <p>
+                Comece com 7 dias grátis.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            {% for plan in plans %}
+
+                <div class="card">
+
+                    <h2>
+                        {{ plan.name }}
+                    </h2>
+
+                    <div class="price">
+
+                        R$
+                        {{ plan.price|floatformat:2 }}
+
+                    </div>
+
+                    <p>
+                        / mês
+                    </p>
+
+                    <hr
+                        style="
+                            border:0;
+                            border-top:1px solid var(--border);
+                            margin:20px 0;
+                        "
+                    >
+
+                    <p>
+                        ✅ Até
+                        {{ plan.max_professionals }}
+                        profissionais
+                    </p>
+
+                    <p>
+                        ✅ Até
+                        {{ plan.max_services }}
+                        serviços
+                    </p>
+
+                    <p>
+                        {% if plan.crm_enabled %}
+                            ✅
+                        {% else %}
+                            ❌
+                        {% endif %}
+                        CRM
+                    </p>
+
+                    <p>
+                        {% if plan.advanced_reports %}
+                            ✅
+                        {% else %}
+                            ❌
+                        {% endif %}
+                        Relatórios avançados
+                    </p>
+
+
+                    <a
+                        href="{% url 'public:register' %}"
+                        class="btn"
+                    >
+                        Testar grátis
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <div class="card">
+                    Nenhum plano cadastrado.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

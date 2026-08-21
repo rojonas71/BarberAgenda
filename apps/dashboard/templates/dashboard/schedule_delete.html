@@ -1,0 +1,36 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Excluir horário{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Excluir horário</h1>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+
+        <p>
+            Deseja remover este horário de
+            <strong>{{ schedule.professional.name }}</strong>?
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <button class="btn btn-danger">
+                Excluir
+            </button>
+
+            <a href="{% url 'dashboard:schedules' %}" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

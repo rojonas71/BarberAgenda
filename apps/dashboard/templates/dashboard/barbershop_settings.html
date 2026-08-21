@@ -1,0 +1,337 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Minha Barbearia
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>🏪 Minha Barbearia</h1>
+
+        <p>
+            Gerencie as informações da sua barbearia.
+        </p>
+    </div>
+
+    {% if request.barbershop.slug %}
+        <a
+            href="/b/{{ request.barbershop.slug }}/"
+            target="_blank"
+            class="btn btn-secondary"
+        >
+            🌐 Ver página pública
+        </a>
+    {% endif %}
+
+</div>
+
+
+{% if request.barbershop %}
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Nome
+        </div>
+
+        <div
+            class="stat-value"
+            style="font-size:20px;"
+        >
+            {{ request.barbershop.name }}
+        </div>
+
+        <div class="stat-detail">
+            Barbearia atual
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Status
+        </div>
+
+        <div
+            class="stat-value"
+            style="font-size:20px;"
+        >
+            {% if request.barbershop.active %}
+                🟢 Ativa
+            {% else %}
+                🔴 Inativa
+            {% endif %}
+        </div>
+
+        <div class="stat-detail">
+            Situação da barbearia
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Slug
+        </div>
+
+        <div
+            class="stat-value"
+            style="
+                font-size:16px;
+                word-break:break-word;
+            "
+        >
+            {{ request.barbershop.slug }}
+        </div>
+
+        <div class="stat-detail">
+            Identificador público
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Seu perfil
+        </div>
+
+        <div
+            class="stat-value"
+            style="font-size:20px;"
+        >
+            {% if request.membership %}
+                {{ request.membership.get_role_display }}
+            {% else %}
+                —
+            {% endif %}
+        </div>
+
+        <div class="stat-detail">
+            Permissão atual
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Informações da barbearia</h2>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="form-group">
+
+            <label>
+                Nome
+            </label>
+
+            <input
+                type="text"
+                value="{{ request.barbershop.name }}"
+                disabled
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Telefone
+            </label>
+
+            <input
+                type="text"
+                value="{{ request.barbershop.phone|default:'' }}"
+                disabled
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                WhatsApp
+            </label>
+
+            <input
+                type="text"
+                value="{{ request.barbershop.whatsapp|default:'' }}"
+                disabled
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Endereço
+            </label>
+
+            <input
+                type="text"
+                value="{{ request.barbershop.address|default:'' }}"
+                disabled
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Cidade
+            </label>
+
+            <input
+                type="text"
+                value="{{ request.barbershop.city|default:'' }}"
+                disabled
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Estado
+            </label>
+
+            <input
+                type="text"
+                value="{{ request.barbershop.state|default:'' }}"
+                disabled
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Página pública</h2>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="form-group">
+
+            <label>
+                Link público
+            </label>
+
+            <input
+                id="publicUrl"
+                type="text"
+                readonly
+                value="{{ request.scheme }}://{{ request.get_host }}/b/{{ request.barbershop.slug }}/"
+            >
+
+        </div>
+
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                flex-wrap:wrap;
+            "
+        >
+
+            <button
+                type="button"
+                class="btn"
+                onclick="copyPublicUrl()"
+            >
+                Copiar link
+            </button>
+
+
+            <a
+                href="/b/{{ request.barbershop.slug }}/"
+                target="_blank"
+                class="btn btn-secondary"
+            >
+                Abrir página
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="panel">
+
+    <div class="empty">
+
+        <h2>
+            Nenhuma barbearia vinculada
+        </h2>
+
+        <p>
+            Seu usuário ainda não possui
+            uma barbearia associada.
+        </p>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+function copyPublicUrl() {
+
+    const input =
+        document.getElementById(
+            "publicUrl"
+        );
+
+    if (!input) {
+        return;
+    }
+
+    navigator.clipboard
+        .writeText(input.value)
+        .then(function () {
+            alert(
+                "Link copiado!"
+            );
+        });
+
+}
+
+</script>
+
+{% endblock %}

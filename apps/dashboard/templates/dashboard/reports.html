@@ -1,0 +1,206 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Relatórios
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>📊 Relatórios</h1>
+
+        <p>
+            Acompanhe o desempenho da sua barbearia.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Total de agendamentos
+        </div>
+
+        <div class="stat-value">
+            {{ total_bookings|default:0 }}
+        </div>
+
+        <div class="stat-detail">
+            Todos os agendamentos registrados
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Atendimentos concluídos
+        </div>
+
+        <div class="stat-value">
+            {{ completed_count|default:0 }}
+        </div>
+
+        <div class="stat-detail">
+            Serviços finalizados
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Cancelamentos
+        </div>
+
+        <div class="stat-value">
+            {{ cancelled_count|default:0 }}
+        </div>
+
+        <div class="stat-detail">
+            Agendamentos cancelados
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Faturamento
+        </div>
+
+        <div class="stat-value">
+            R$ {{ total_revenue|default:0|floatformat:2 }}
+        </div>
+
+        <div class="stat-detail">
+            Receita de atendimentos concluídos
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <h2>
+            Indicadores da barbearia
+        </h2>
+
+    </div>
+
+
+    <div class="panel-body">
+
+        <div
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(auto-fit, minmax(220px, 1fr));
+                gap:16px;
+            "
+        >
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Clientes
+                </div>
+
+                <div class="stat-value">
+                    {{ total_customers|default:0 }}
+                </div>
+
+                <div class="stat-detail">
+                    Clientes cadastrados
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Profissionais
+                </div>
+
+                <div class="stat-value">
+                    {{ total_professionals|default:0 }}
+                </div>
+
+                <div class="stat-detail">
+                    Profissionais ativos
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Serviços
+                </div>
+
+                <div class="stat-value">
+                    {{ total_services|default:0 }}
+                </div>
+
+                <div class="stat-detail">
+                    Serviços ativos
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <h2>
+            Resumo
+        </h2>
+
+    </div>
+
+
+    <div class="panel-body">
+
+        <p style="color:var(--muted); line-height:1.7;">
+
+            Esta área concentra os principais indicadores
+            da operação da sua barbearia.
+
+            Nas próximas etapas você pode adicionar:
+
+            faturamento por período,
+            profissional com maior receita,
+            serviço mais vendido,
+            ticket médio,
+            taxa de cancelamento
+            e crescimento mensal.
+
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

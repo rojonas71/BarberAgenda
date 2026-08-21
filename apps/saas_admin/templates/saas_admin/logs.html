@@ -1,0 +1,95 @@
+{% extends "saas_admin/base.html" %}
+
+{% block title %}
+Logs
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>🧾 Logs</h1>
+
+        <p>
+            Histórico de ações administrativas.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+{% if logs %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                    <th>Ação</th>
+                    <th>Entidade</th>
+                    <th>ID</th>
+                    <th>IP</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for log in logs %}
+
+                <tr>
+
+                    <td>
+                        {{ log.created_at|date:"d/m/Y H:i:s" }}
+                    </td>
+
+                    <td>
+                        {% if log.user %}
+                            {{ log.user.username }}
+                        {% else %}
+                            Sistema
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ log.action }}
+                    </td>
+
+                    <td>
+                        {{ log.entity|default:"—" }}
+                    </td>
+
+                    <td>
+                        {{ log.entity_id|default:"—" }}
+                    </td>
+
+                    <td>
+                        {{ log.ip_address|default:"—" }}
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+{% else %}
+
+    <div class="empty">
+        Nenhum log registrado.
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

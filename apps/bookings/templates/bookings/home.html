@@ -1,0 +1,244 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}
+{{ barbershop.name }}
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="container">
+
+        {% if barbershop.logo %}
+            <img
+                src="{{ barbershop.logo.url }}"
+                alt="{{ barbershop.name }}"
+                style="
+                    width:100px;
+                    height:100px;
+                    object-fit:cover;
+                    border-radius:22px;
+                    margin-bottom:20px;
+                "
+            >
+        {% endif %}
+
+        <div
+            style="
+                color:var(--gold);
+                font-weight:800;
+                margin-bottom:12px;
+            "
+        >
+            BARBEARIA
+        </div>
+
+        <h1>
+            {{ barbershop.name }}
+        </h1>
+
+        <p>
+            Escolha seu serviço,
+            profissional e horário
+            para fazer seu agendamento.
+        </p>
+
+        <div class="hero-actions">
+
+            <a
+                href="{% url 'bookings:create' barbershop.slug %}"
+                class="btn"
+            >
+                📅 Agendar horário
+            </a>
+
+            {% if barbershop.whatsapp %}
+                <a
+                    href="https://wa.me/55{{ barbershop.whatsapp }}"
+                    target="_blank"
+                    rel="noopener"
+                    class="btn btn-secondary"
+                >
+                    WhatsApp
+                </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>
+                Serviços
+            </h2>
+
+            <p>
+                Conheça os serviços disponíveis.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            {% for service in services %}
+
+                <div class="card">
+
+                    <h3>
+                        {{ service.name }}
+                    </h3>
+
+                    {% if service.description %}
+                        <p>
+                            {{ service.description }}
+                        </p>
+                    {% endif %}
+
+                    <div
+                        style="
+                            font-size:24px;
+                            font-weight:900;
+                            margin:16px 0 5px;
+                        "
+                    >
+                        R$ {{ service.price|floatformat:2 }}
+                    </div>
+
+                    <p>
+                        ⏱️ {{ service.duration_minutes }} minutos
+                    </p>
+
+                </div>
+
+            {% empty %}
+
+                <div class="card">
+                    <p>
+                        Nenhum serviço disponível.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>
+                Profissionais
+            </h2>
+
+            <p>
+                Conheça nossa equipe.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            {% for professional in professionals %}
+
+                <div class="card">
+
+                    {% if professional.photo %}
+
+                        <img
+                            src="{{ professional.photo.url }}"
+                            alt="{{ professional.name }}"
+                            style="
+                                width:80px;
+                                height:80px;
+                                object-fit:cover;
+                                border-radius:50%;
+                                margin-bottom:15px;
+                            "
+                        >
+
+                    {% endif %}
+
+                    <h3>
+                        {{ professional.name }}
+                    </h3>
+
+                    <p>
+                        {% for service in professional.services.all %}
+                            {{ service.name }}
+                            {% if not forloop.last %}
+                                •
+                            {% endif %}
+                        {% empty %}
+                            Profissional da equipe
+                        {% endfor %}
+                    </p>
+
+                </div>
+
+            {% empty %}
+
+                <div class="card">
+                    <p>
+                        Nenhum profissional disponível.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div
+        class="container"
+        style="text-align:center;"
+    >
+
+        <div class="card">
+
+            <h2>
+                Pronto para agendar?
+            </h2>
+
+            <p>
+                Escolha seu serviço,
+                profissional, data e horário.
+            </p>
+
+            <a
+                href="{% url 'bookings:create' barbershop.slug %}"
+                class="btn"
+            >
+                Agendar agora
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

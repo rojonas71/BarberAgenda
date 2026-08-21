@@ -1,0 +1,84 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Remover membro
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Remover membro</h1>
+
+        <p>
+            Confirme a remoção do acesso.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-body">
+
+        <h2>
+            Remover
+
+            {% if membership.user.get_full_name %}
+                {{ membership.user.get_full_name }}
+            {% else %}
+                {{ membership.user.username }}
+            {% endif %}
+
+            ?
+        </h2>
+
+
+        <p style="color:var(--muted);">
+
+            O usuário perderá o acesso à barbearia:
+
+            <strong style="color:white;">
+                {{ request.barbershop.name }}
+            </strong>
+
+        </p>
+
+
+        <div class="message warning">
+
+            O usuário não será apagado do sistema.
+
+            Apenas o vínculo com esta barbearia
+            será desativado.
+
+        </div>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+                Remover acesso
+            </button>
+
+            <a
+                href="{% url 'dashboard:team' %}"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

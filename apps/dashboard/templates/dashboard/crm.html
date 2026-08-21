@@ -1,0 +1,153 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+CRM
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>🎯 CRM</h1>
+
+        <p>
+            Acompanhe e organize o relacionamento
+            com seus clientes.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Total de clientes
+        </div>
+
+        <div class="stat-value">
+            {{ total_customers }}
+        </div>
+
+        <div class="stat-detail">
+            Base atual
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Clientes novos
+        </div>
+
+        <div class="stat-value">
+            —
+        </div>
+
+        <div class="stat-detail">
+            Será calculado pelo histórico
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Clientes recorrentes
+        </div>
+
+        <div class="stat-value">
+            —
+        </div>
+
+        <div class="stat-detail">
+            Clientes com mais de uma visita
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Inativos
+        </div>
+
+        <div class="stat-value">
+            —
+        </div>
+
+        <div class="stat-detail">
+            Sem retorno recente
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Clientes</h2>
+    </div>
+
+    {% if customers %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Telefone</th>
+                        <th>Cadastro</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for customer in customers %}
+
+                        <tr>
+
+                            <td>
+                                {{ customer.name }}
+                            </td>
+
+                            <td>
+                                {{ customer.phone }}
+                            </td>
+
+                            <td>
+                                {{ customer.created_at|date:"d/m/Y" }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            Nenhum cliente disponível para análise.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

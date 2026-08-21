@@ -1,0 +1,133 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Plano e Cobrança
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>💳 Plano e Cobrança</h1>
+
+        <p>
+            Gerencie o plano da sua barbearia.
+        </p>
+    </div>
+</div>
+
+
+{% if subscription %}
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <h2>Plano atual</h2>
+
+        <span
+            class="
+                badge
+                {% if subscription.status == 'active' %}
+                    status-completed
+                {% elif subscription.status == 'trial' %}
+                    status-confirmed
+                {% else %}
+                    status-cancelled
+                {% endif %}
+            "
+        >
+            {{ subscription.get_status_display }}
+        </span>
+
+    </div>
+
+    <div class="panel-body">
+
+        <h2>
+            {{ subscription.plan.name }}
+        </h2>
+
+        <p>
+            R$
+            {{ subscription.plan.price|floatformat:2 }}
+            / mês
+        </p>
+
+        {% if subscription.status == "trial" %}
+
+            <p>
+                Teste grátis até:
+
+                <strong>
+                    {{ subscription.trial_ends_at|date:"d/m/Y H:i" }}
+                </strong>
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<div class="stats-grid">
+
+{% for plan in plans %}
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            {{ plan.name }}
+        </div>
+
+        <div class="stat-value">
+            R$ {{ plan.price|floatformat:2 }}
+        </div>
+
+        <div class="stat-detail">
+            por mês
+        </div>
+
+        <p>
+            {{ plan.max_professionals }}
+            profissionais
+        </p>
+
+        <p>
+            {{ plan.max_services }}
+            serviços
+        </p>
+
+        <p>
+            {{ plan.max_team_members }}
+            usuários
+        </p>
+
+        <p>
+            CRM:
+            {% if plan.crm_enabled %}
+                ✅
+            {% else %}
+                ❌
+            {% endif %}
+        </p>
+
+        <p>
+            Relatórios:
+            {% if plan.advanced_reports %}
+                ✅
+            {% else %}
+                ❌
+            {% endif %}
+        </p>
+
+    </div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Horários{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>⏰ Horários</h1>
+        <p>Configure a disponibilidade semanal dos profissionais.</p>
+    </div>
+
+    <a href="{% url 'dashboard:schedule_create' %}" class="btn">
+        + Novo horário
+    </a>
+</div>
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Disponibilidade semanal</h2>
+    </div>
+
+    {% if schedules %}
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Profissional</th>
+                    <th>Dia</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Intervalo</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for schedule in schedules %}
+
+                <tr>
+                    <td>
+                        <strong>{{ schedule.professional.name }}</strong>
+                    </td>
+
+                    <td>
+                        {{ schedule.get_weekday_display }}
+                    </td>
+
+                    <td>
+                        {{ schedule.start_time|time:"H:i" }}
+                    </td>
+
+                    <td>
+                        {{ schedule.end_time|time:"H:i" }}
+                    </td>
+
+                    <td>
+                        {{ schedule.interval_minutes }} min
+                    </td>
+
+                    <td>
+                        {% if schedule.active %}
+                            <span class="badge status-completed">
+                                Ativo
+                            </span>
+                        {% else %}
+                            <span class="badge status-cancelled">
+                                Inativo
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a
+                            href="{% url 'dashboard:schedule_update' schedule.pk %}"
+                            class="btn btn-secondary"
+                        >
+                            Editar
+                        </a>
+
+                        <a
+                            href="{% url 'dashboard:schedule_delete' schedule.pk %}"
+                            class="btn btn-danger"
+                        >
+                            Excluir
+                        </a>
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+
+        <div class="empty">
+            Nenhum horário configurado.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

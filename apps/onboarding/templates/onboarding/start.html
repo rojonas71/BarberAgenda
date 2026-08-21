@@ -1,0 +1,101 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}
+Configure sua Barbearia
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+    <div
+        class="container"
+        style="max-width:650px;"
+    >
+
+        <div class="section-title">
+
+            <h2>
+                Configure sua barbearia
+            </h2>
+
+            <p>
+                Preencha as informações iniciais
+                para começar a usar o BarberAgenda.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+
+                {% if form.non_field_errors %}
+
+                    <div
+                        style="
+                            color:#f87171;
+                            margin-bottom:18px;
+                        "
+                    >
+                        {{ form.non_field_errors }}
+                    </div>
+
+                {% endif %}
+
+
+                {% for field in form %}
+
+                    <div class="form-group">
+
+                        <label
+                            for="{{ field.id_for_label }}"
+                        >
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.errors %}
+
+                            <div
+                                style="
+                                    margin-top:7px;
+                                    color:#f87171;
+                                    font-size:13px;
+                                "
+                            >
+                                {{ field.errors }}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="width:100%;"
+                >
+                    Criar minha barbearia
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

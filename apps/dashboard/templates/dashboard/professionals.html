@@ -1,0 +1,112 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Profissionais{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>💈 Profissionais</h1>
+        <p>Gerencie os profissionais da sua barbearia.</p>
+    </div>
+
+    <a href="{% url 'dashboard:professional_create' %}" class="btn">
+        + Novo profissional
+    </a>
+</div>
+
+<div class="panel">
+    <div class="panel-header">
+        <h2>Profissionais cadastrados</h2>
+    </div>
+
+    {% if professionals %}
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Profissional</th>
+                    <th>Telefone</th>
+                    <th>Serviços</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for professional in professionals %}
+                <tr>
+                    <td>
+                        <strong>{{ professional.name }}</strong>
+                    </td>
+
+                    <td>
+                        {{ professional.phone|default:"—" }}
+                    </td>
+
+                    <td>
+                        {% for service in professional.services.all %}
+                            <span class="badge">
+                                {{ service.name }}
+                            </span>
+                        {% empty %}
+                            —
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        {% if professional.active %}
+                            <span class="badge status-completed">
+                                Ativo
+                            </span>
+                        {% else %}
+                            <span class="badge status-cancelled">
+                                Inativo
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+
+                            <a
+                                href="{% url 'dashboard:professional_update' professional.pk %}"
+                                class="btn btn-secondary"
+                            >
+                                Editar
+                            </a>
+
+                            <a
+                                href="{% url 'dashboard:professional_delete' professional.pk %}"
+                                class="btn btn-danger"
+                            >
+                                Excluir
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+
+    <div class="empty">
+        <h2>Nenhum profissional</h2>
+
+        <p>
+            Cadastre o primeiro profissional da barbearia.
+        </p>
+
+        <a href="{% url 'dashboard:professional_create' %}" class="btn">
+            + Novo profissional
+        </a>
+    </div>
+
+    {% endif %}
+</div>
+
+{% endblock %}

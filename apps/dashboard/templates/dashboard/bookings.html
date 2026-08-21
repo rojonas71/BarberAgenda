@@ -1,0 +1,222 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Agendamentos
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>📅 Agendamentos</h1>
+
+        <p>
+            Consulte e gerencie
+            todos os agendamentos.
+        </p>
+    </div>
+
+</div>
+
+
+<form
+    method="get"
+    class="filters"
+>
+
+    <input
+        type="text"
+        name="search"
+        value="{{ search }}"
+        placeholder="Buscar cliente..."
+    >
+
+
+    <input
+        type="date"
+        name="date"
+        value="{{ selected_date }}"
+    >
+
+
+    <select name="professional">
+
+        <option value="">
+            Todos os profissionais
+        </option>
+
+        {% for professional in professionals %}
+
+            <option
+                value="{{ professional.pk }}"
+                {% if selected_professional == professional.pk|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+                {{ professional.name }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+
+    <select name="status">
+
+        <option value="">
+            Todos os status
+        </option>
+
+        <option
+            value="pending"
+            {% if selected_status == "pending" %}
+                selected
+            {% endif %}
+        >
+            Pendente
+        </option>
+
+        <option
+            value="confirmed"
+            {% if selected_status == "confirmed" %}
+                selected
+            {% endif %}
+        >
+            Confirmado
+        </option>
+
+        <option
+            value="completed"
+            {% if selected_status == "completed" %}
+                selected
+            {% endif %}
+        >
+            Concluído
+        </option>
+
+        <option
+            value="cancelled"
+            {% if selected_status == "cancelled" %}
+                selected
+            {% endif %}
+        >
+            Cancelado
+        </option>
+
+    </select>
+
+
+    <button
+        type="submit"
+        class="btn"
+    >
+        Filtrar
+    </button>
+
+
+    <a
+        href="{% url 'dashboard:bookings' %}"
+        class="btn btn-secondary"
+    >
+        Limpar
+    </a>
+
+</form>
+
+
+<div class="panel">
+
+    {% if bookings %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Cliente</th>
+                        <th>Serviço</th>
+                        <th>Profissional</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for booking in bookings %}
+
+                    <tr>
+
+                        <td>
+                            {{ booking.date|date:"d/m/Y" }}
+                        </td>
+
+                        <td>
+                            {{ booking.start_time|time:"H:i" }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ booking.customer.name }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ booking.service.name }}
+                        </td>
+
+                        <td>
+                            {{ booking.professional.name }}
+                        </td>
+
+                        <td>
+                            R$
+                            {{ booking.service.price|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            <span
+                                class="
+                                    badge
+                                    status-{{ booking.status }}
+                                "
+                            >
+                                {{ booking.get_status_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <a
+                                href="{% url 'dashboard:booking_detail' booking.pk %}"
+                                class="btn btn-secondary"
+                            >
+                                Abrir
+                            </a>
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            Nenhum agendamento encontrado.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

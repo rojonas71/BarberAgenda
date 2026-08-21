@@ -1,0 +1,215 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Agendamento
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>
+            Agendamento
+        </h1>
+
+        <p>
+            Detalhes do atendimento.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'dashboard:bookings' %}"
+        class="btn btn-secondary"
+    >
+        Voltar
+    </a>
+
+</div>
+
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Data
+        </div>
+
+        <div
+            class="stat-value"
+            style="font-size:20px;"
+        >
+            {{ booking.date|date:"d/m/Y" }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Horário
+        </div>
+
+        <div
+            class="stat-value"
+            style="font-size:20px;"
+        >
+            {{ booking.start_time|time:"H:i" }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Valor
+        </div>
+
+        <div
+            class="stat-value"
+            style="font-size:20px;"
+        >
+            R$
+            {{ booking.service.price|floatformat:2 }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Status
+        </div>
+
+        <div>
+            <span
+                class="
+                    badge
+                    status-{{ booking.status }}
+                "
+            >
+                {{ booking.get_status_display }}
+            </span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Atendimento</h2>
+    </div>
+
+    <div class="panel-body">
+
+        <p>
+            <strong>Cliente:</strong><br>
+            {{ booking.customer.name }}
+        </p>
+
+        <p>
+            <strong>Telefone:</strong><br>
+            {{ booking.customer.phone }}
+        </p>
+
+        <p>
+            <strong>Serviço:</strong><br>
+            {{ booking.service.name }}
+        </p>
+
+        <p>
+            <strong>Profissional:</strong><br>
+            {{ booking.professional.name }}
+        </p>
+
+        <p>
+            <strong>Horário:</strong><br>
+
+            {{ booking.start_time|time:"H:i" }}
+
+            até
+
+            {{ booking.end_time|time:"H:i" }}
+        </p>
+
+        {% if booking.notes %}
+
+            <p>
+                <strong>Observações:</strong><br>
+
+                {{ booking.notes|linebreaksbr }}
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>
+            Alterar status
+        </h2>
+    </div>
+
+    <div class="panel-body">
+
+        <form
+            method="post"
+            action="{% url 'dashboard:booking_update_status' booking.pk %}"
+        >
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>
+                    Status
+                </label>
+
+                <select
+                    name="status"
+                    required
+                >
+
+                    {% for value, label in booking.STATUS_CHOICES %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if booking.status == value %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ label }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                Salvar status
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

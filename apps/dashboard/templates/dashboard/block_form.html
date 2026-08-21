@@ -1,0 +1,109 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>🚫 {{ title }}</h1>
+
+        <p>
+            Defina um período em que o profissional
+            ficará indisponível para agendamentos.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'dashboard:blocks' %}"
+        class="btn btn-secondary"
+    >
+        Voltar
+    </a>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Dados do bloqueio</h2>
+    </div>
+
+
+    <div class="panel-body">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+
+                <div class="message error">
+                    {{ form.non_field_errors }}
+                </div>
+
+            {% endif %}
+
+
+            {% for field in form %}
+
+                <div class="form-group">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.errors %}
+
+                        <div
+                            class="message error"
+                            style="margin-top:8px;"
+                        >
+                            {{ field.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+
+            <div
+                style="
+                    display:flex;
+                    gap:10px;
+                    flex-wrap:wrap;
+                    margin-top:22px;
+                "
+            >
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
+                    {{ button_text }}
+                </button>
+
+                <a
+                    href="{% url 'dashboard:blocks' %}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

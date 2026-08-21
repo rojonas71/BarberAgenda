@@ -1,0 +1,123 @@
+{% extends "saas_admin/base.html" %}
+
+{% block title %}
+Assinaturas
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>💳 Assinaturas</h1>
+
+        <p>
+            Assinaturas das barbearias.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+{% if subscriptions %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Barbearia</th>
+                    <th>Plano</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Trial</th>
+                    <th>Renovação</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for subscription in subscriptions %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ subscription.barbershop.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ subscription.plan.name }}
+                    </td>
+
+                    <td>
+                        R$
+                        {{ subscription.plan.price|floatformat:2 }}
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="
+                                badge
+                                status-{{ subscription.status }}
+                            "
+                        >
+                            {{ subscription.get_status_display }}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {% if subscription.trial_ends_at %}
+
+                            {{ subscription.trial_ends_at|date:"d/m/Y" }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if subscription.current_period_end %}
+
+                            {{ subscription.current_period_end|date:"d/m/Y" }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+{% else %}
+
+    <div class="empty">
+        Nenhuma assinatura encontrada.
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

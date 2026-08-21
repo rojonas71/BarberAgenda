@@ -1,0 +1,106 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}
+Entrar
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+
+    <div
+        class="container"
+        style="max-width:480px;"
+    >
+
+        <div class="section-title">
+
+            <h2>
+                Entrar
+            </h2>
+
+            <p>
+                Acesse o painel
+                da sua barbearia.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                {% if form.errors %}
+
+                    <div
+                        style="
+                            color:#f87171;
+                            margin-bottom:18px;
+                        "
+                    >
+                        Usuário ou senha incorretos.
+                    </div>
+
+                {% endif %}
+
+
+                <div class="form-group">
+
+                    <label>
+                        Usuário
+                    </label>
+
+                    {{ form.username }}
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Senha
+                    </label>
+
+                    {{ form.password }}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="width:100%;"
+                >
+                    Entrar
+                </button>
+
+            </form>
+
+
+            <p
+                style="
+                    text-align:center;
+                    margin-top:20px;
+                    color:var(--muted);
+                "
+            >
+                Ainda não tem conta?
+
+                <a
+                    href="{% url 'public:register' %}"
+                    style="color:var(--gold);"
+                >
+                    Criar conta
+                </a>
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

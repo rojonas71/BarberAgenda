@@ -1,0 +1,90 @@
+{% extends "saas_admin/base.html" %}
+
+{% block title %}
+Planos
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>💎 Planos</h1>
+
+        <p>
+            Planos comerciais disponíveis.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="stats-grid">
+
+{% for plan in plans %}
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            {{ plan.name }}
+        </div>
+
+        <div class="stat-value">
+            R$ {{ plan.price|floatformat:2 }}
+        </div>
+
+        <div class="stat-detail">
+            por mês
+        </div>
+
+
+        <div style="margin-top:20px;">
+
+            <p>
+                Profissionais:
+                {{ plan.max_professionals }}
+            </p>
+
+            <p>
+                Serviços:
+                {{ plan.max_services }}
+            </p>
+
+            <p>
+                Equipe:
+                {{ plan.max_team_members }}
+            </p>
+
+            <p>
+                CRM:
+                {% if plan.crm_enabled %}
+                    ✅
+                {% else %}
+                    ❌
+                {% endif %}
+            </p>
+
+            <p>
+                Relatórios:
+                {% if plan.advanced_reports %}
+                    ✅
+                {% else %}
+                    ❌
+                {% endif %}
+            </p>
+
+        </div>
+
+    </div>
+
+{% empty %}
+
+    <div class="empty">
+        Nenhum plano cadastrado.
+    </div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends "saas_admin/base.html" %}
+
+{% block title %}
+Barbearias
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>🏪 Barbearias</h1>
+
+        <p>
+            Todas as empresas cadastradas na plataforma.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+{% if barbershops %}
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Barbearia</th>
+                    <th>Slug</th>
+                    <th>Cidade</th>
+                    <th>Status</th>
+                    <th>Cadastro</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for barbershop in barbershops %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ barbershop.name }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ barbershop.slug }}
+                    </td>
+
+                    <td>
+                        {{ barbershop.city|default:"—" }}
+
+                        {% if barbershop.state %}
+                            / {{ barbershop.state }}
+                        {% endif %}
+                    </td>
+
+                    <td>
+
+                        {% if barbershop.active %}
+
+                            <span class="badge status-active">
+                                Ativa
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge status-cancelled">
+                                Inativa
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ barbershop.created_at|date:"d/m/Y" }}
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+{% else %}
+
+    <div class="empty">
+        Nenhuma barbearia cadastrada.
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

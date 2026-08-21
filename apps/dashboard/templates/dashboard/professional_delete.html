@@ -1,0 +1,38 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Excluir profissional{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Excluir profissional</h1>
+        <p>Confirme a exclusão.</p>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-body">
+
+        <h2>{{ professional.name }}</h2>
+
+        <p style="color:var(--muted);">
+            Tem certeza que deseja excluir este profissional?
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-danger">
+                Excluir
+            </button>
+
+            <a href="{% url 'dashboard:professionals' %}" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

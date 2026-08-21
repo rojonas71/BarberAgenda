@@ -1,0 +1,59 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Excluir serviço
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Excluir serviço</h1>
+
+        <p>
+            Confirme esta operação.
+        </p>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-body">
+
+        <h2>
+            Excluir {{ service.name }}?
+        </h2>
+
+        <p style="color:var(--muted);">
+            Esta ação poderá afetar registros
+            relacionados ao serviço.
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+                Excluir serviço
+            </button>
+
+            <a
+                href="{% url 'dashboard:services' %}"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

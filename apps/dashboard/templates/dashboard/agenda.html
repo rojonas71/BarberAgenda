@@ -1,0 +1,165 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}
+Agenda
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>🗓️ Agenda</h1>
+
+        <p>
+            Visualize os atendimentos
+            de um dia específico.
+        </p>
+    </div>
+
+</div>
+
+
+<form
+    method="get"
+    class="filters"
+>
+
+    <input
+        type="date"
+        name="date"
+        value="{{ selected_date }}"
+    >
+
+    <button
+        type="submit"
+        class="btn"
+    >
+        Buscar
+    </button>
+
+</form>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <h2>
+            Agenda do dia
+        </h2>
+
+        <span class="badge">
+            {{ bookings|length }}
+            agendamento{{ bookings|length|pluralize }}
+        </span>
+
+    </div>
+
+
+    {% if bookings %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>Cliente</th>
+                        <th>Serviço</th>
+                        <th>Profissional</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for booking in bookings %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ booking.start_time|time:"H:i" }}
+                            </strong>
+
+                            <div
+                                style="
+                                    color:var(--muted);
+                                    font-size:12px;
+                                    margin-top:4px;
+                                "
+                            >
+                                até
+                                {{ booking.end_time|time:"H:i" }}
+                            </div>
+                        </td>
+
+                        <td>
+                            {{ booking.customer.name }}
+                        </td>
+
+                        <td>
+                            {{ booking.service.name }}
+                        </td>
+
+                        <td>
+                            {{ booking.professional.name }}
+                        </td>
+
+                        <td>
+                            <span
+                                class="
+                                    badge
+                                    status-{{ booking.status }}
+                                "
+                            >
+                                {{ booking.get_status_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <a
+                                href="{% url 'dashboard:booking_detail' booking.pk %}"
+                                class="btn btn-secondary"
+                            >
+                                Ver
+                            </a>
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+
+            <div style="font-size:48px;">
+                🗓️
+            </div>
+
+            <h2>
+                Agenda livre
+            </h2>
+
+            <p>
+                Nenhum atendimento
+                encontrado nesta data.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
