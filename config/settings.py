@@ -21,20 +21,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
-    "django-insecure-dev-only-change-me",
+    "dev-only-secret"
 )
 
 DEBUG = os.getenv(
     "DEBUG",
-    "True",
+    "True"
 ).lower() == "true"
-
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     ".onrender.com",
     "app.barberagenda.com.br",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com",
+    "https://app.barberagenda.com.br",
 ]
 
 
@@ -172,22 +176,14 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 import os
 
 
-if os.getenv("RDS_HOSTNAME"):
+if DATABASE_URL:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ["RDS_DB_NAME"],
-            "USER": os.environ["RDS_USERNAME"],
-            "PASSWORD": os.environ["RDS_PASSWORD"],
-            "HOST": os.environ["RDS_HOSTNAME"],
-            "PORT": os.getenv(
-                "RDS_PORT",
-                "5432",
-            ),
-            "CONN_MAX_AGE": 600,
-        }
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-
 else:
     DATABASES = {
         "default": {
@@ -195,7 +191,6 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
 
 # ============================================================
 # PASSWORD VALIDATION
