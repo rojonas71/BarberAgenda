@@ -94,8 +94,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # Static files no Render
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -103,7 +101,6 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
 
-    # BarberAgenda
     "apps.core.middleware.CurrentBarbershopMiddleware",
 
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -245,6 +242,13 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# Caso você tenha uma pasta /static na raiz
+STATICFILES_DIRS = []
+
+if (BASE_DIR / "static").exists():
+    STATICFILES_DIRS.append(
+        BASE_DIR / "static"
+    )
 
 STORAGES = {
     "staticfiles": {
@@ -254,16 +258,6 @@ STORAGES = {
         ),
     },
 }
-
-
-# Caso você tenha uma pasta /static na raiz
-STATICFILES_DIRS = []
-
-if (BASE_DIR / "static").exists():
-    STATICFILES_DIRS.append(
-        BASE_DIR / "static"
-    )
-
 
 # ============================================================
 # MEDIA
