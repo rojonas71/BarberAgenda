@@ -358,3 +358,44 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://app.barberagenda.com.br",
 ]
+
+if os.getenv("RDS_HOSTNAME"):
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+
+            "NAME": os.getenv(
+                "RDS_DB_NAME",
+                "postgres",
+            ),
+
+            "USER": os.getenv(
+                "RDS_USERNAME",
+            ),
+
+            "PASSWORD": os.getenv(
+                "RDS_PASSWORD",
+            ),
+
+            "HOST": os.getenv(
+                "RDS_HOSTNAME",
+            ),
+
+            "PORT": os.getenv(
+                "RDS_PORT",
+                "5432",
+            ),
+
+            "CONN_MAX_AGE": 600,
+        }
+    }
+
+else:
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
