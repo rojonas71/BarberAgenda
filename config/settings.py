@@ -227,13 +227,7 @@ DATABASE_URL = os.getenv(
     "",
 ).strip()
 
-
 if DATABASE_URL:
-
-    # --------------------------------------------------------
-    # PRODUÇÃO / RENDER
-    # --------------------------------------------------------
-
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -241,20 +235,13 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
-
 else:
-
-    # --------------------------------------------------------
-    # DESENVOLVIMENTO LOCAL / WINDOWS
-    # --------------------------------------------------------
-
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
 
 # ============================================================
 # PASSWORD VALIDATION
