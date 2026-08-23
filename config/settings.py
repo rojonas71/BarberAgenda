@@ -24,7 +24,6 @@ SECRET_KEY = os.getenv(
     "django-insecure-dev-only-change-me",
 )
 
-
 DEBUG = os.getenv(
     "DEBUG",
     "True",
@@ -43,25 +42,6 @@ ALLOWED_HOSTS = [
 ]
 
 
-# Host automático disponibilizado pelo Render
-RENDER_EXTERNAL_HOSTNAME = os.getenv(
-    "RENDER_EXTERNAL_HOSTNAME"
-)
-
-if (
-    RENDER_EXTERNAL_HOSTNAME
-    and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS
-):
-    ALLOWED_HOSTS.append(
-        RENDER_EXTERNAL_HOSTNAME
-    )
-
-
-# Permite adicionar outros hosts por variável de ambiente.
-#
-# Exemplo:
-# ALLOWED_HOSTS=barberagenda26.onrender.com,app.barberagenda.com.br
-#
 EXTRA_ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
     "",
@@ -71,10 +51,7 @@ if EXTRA_ALLOWED_HOSTS:
     for host in EXTRA_ALLOWED_HOSTS.split(","):
         host = host.strip()
 
-        if (
-            host
-            and host not in ALLOWED_HOSTS
-        ):
+        if host and host not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(host)
 
 
@@ -88,23 +65,11 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-if RENDER_EXTERNAL_HOSTNAME:
-    render_origin = (
-        f"https://{RENDER_EXTERNAL_HOSTNAME}"
-    )
-
-    if render_origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(
-            render_origin
-        )
-
-
 # ============================================================
-# APLICAÇÕES
+# APPS
 # ============================================================
 
 INSTALLED_APPS = [
-    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -112,7 +77,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # BarberAgenda
     "apps.accounts.apps.AccountsConfig",
     "apps.barbershops.apps.BarbershopsConfig",
     "apps.professionals.apps.ProfessionalsConfig",
@@ -121,14 +85,9 @@ INSTALLED_APPS = [
     "apps.customers.apps.CustomersConfig",
     "apps.dashboard.apps.DashboardConfig",
 
-    # Micro SaaS
     "apps.core.apps.CoreConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
-
-    # Super Admin
     "apps.saas_admin.apps.SaasAdminConfig",
-
-    # Área pública
     "apps.public.apps.PublicConfig",
 ]
 
@@ -149,9 +108,6 @@ AUTHENTICATION_BACKENDS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # WhiteNoise deve ficar logo depois
-    # do SecurityMiddleware.
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -159,7 +115,6 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
 
-    # BarberAgenda
     "apps.core.middleware.CurrentBarbershopMiddleware",
 
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -181,8 +136,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": (
-            "django.template.backends.django."
-            "DjangoTemplates"
+            "django.template.backends.django.DjangoTemplates"
         ),
 
         "DIRS": [
@@ -193,18 +147,9 @@ TEMPLATES = [
 
         "OPTIONS": {
             "context_processors": [
-                (
-                    "django.template."
-                    "context_processors.request"
-                ),
-                (
-                    "django.contrib.auth."
-                    "context_processors.auth"
-                ),
-                (
-                    "django.contrib.messages."
-                    "context_processors.messages"
-                ),
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -235,6 +180,7 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
+
 else:
     DATABASES = {
         "default": {
@@ -242,6 +188,7 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
 
 # ============================================================
 # PASSWORD VALIDATION
@@ -318,7 +265,7 @@ STORAGES = {
 
 
 # ============================================================
-# MEDIA / UPLOADS
+# MEDIA
 # ============================================================
 
 MEDIA_URL = "/media/"
@@ -351,9 +298,7 @@ EMAIL_BACKEND = os.getenv(
 # DEFAULT PRIMARY KEY
 # ============================================================
 
-DEFAULT_AUTO_FIELD = (
-    "django.db.models.BigAutoField"
-)
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # ============================================================
@@ -366,25 +311,18 @@ CSRF_COOKIE_HTTPONLY = False
 
 
 # ============================================================
-# SEGURANÇA DE PRODUÇÃO
+# SEGURANÇA EM PRODUÇÃO
 # ============================================================
 
 if not DEBUG:
-
-    # Render recebe HTTPS por proxy.
     SECURE_PROXY_SSL_HEADER = (
         "HTTP_X_FORWARDED_PROTO",
         "https",
     )
 
-    # Força HTTPS
-    SECURE_SSL_REDIRECT = True
-
-    # Cookies somente via HTTPS
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-    # Segurança adicional
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
     SECURE_REFERRER_POLICY = (
@@ -392,37 +330,3 @@ if not DEBUG:
     )
 
     X_FRAME_OPTIONS = "DENY"
-
-
-# ============================================================
-# PRODUÇÃO - HSTS
-# ============================================================
-#
-# Não habilite HSTS permanente imediatamente.
-#
-# Depois que:
-#
-# https://barberagenda26.onrender.com
-#
-# e
-#
-# https://app.barberagenda.com.br
-#
-# estiverem funcionando perfeitamente,
-# você poderá habilitar:
-#
-# if not DEBUG:
-#     SECURE_HSTS_SECONDS = 31536000
-#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-#     SECURE_HSTS_PRELOAD = True
-#
-# ============================================================
-
-from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE",
-    "config.settings",
-)
-
-application = get_wsgi_application()
