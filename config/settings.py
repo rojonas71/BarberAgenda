@@ -222,10 +222,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # DATABASE
 # ============================================================
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "",
-).strip()
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
 if DATABASE_URL:
     DATABASES = {
