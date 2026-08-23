@@ -26,8 +26,13 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv(
     "DEBUG",
-    "True",
+    "False",
 ).lower() == "true"
+
+if not DEBUG and SECRET_KEY == "django-insecure-dev-only-change-me":
+    raise RuntimeError(
+        "Set SECRET_KEY in the production environment."
+    )
 
 
 # ============================================================
@@ -63,6 +68,18 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
     "https://app.barberagenda.com.br",
 ]
+
+EXTRA_CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "",
+)
+
+if EXTRA_CSRF_TRUSTED_ORIGINS:
+    for origin in EXTRA_CSRF_TRUSTED_ORIGINS.split(","):
+        origin = origin.strip()
+
+        if origin and origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
 
 
 # ============================================================
@@ -323,6 +340,7 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
+    SECURE_SSL_REDIRECT = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
     SECURE_REFERRER_POLICY = (
