@@ -38,7 +38,7 @@ DEBUG = os.getenv(
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "barberagenda26.onrender.com",
+    ".vercel.app",
     "app.barberagenda.com.br",
 ]
 
@@ -83,7 +83,7 @@ if EXTRA_ALLOWED_HOSTS:
 # ============================================================
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://barberagenda26.onrender.com",
+    "https://*.vercel.app",
     "https://app.barberagenda.com.br",
 ]
 
@@ -222,7 +222,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 # DATABASE
 # ============================================================
 
-DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "",
+).strip()
 
 if DATABASE_URL:
     DATABASES = {
@@ -414,3 +417,12 @@ if not DEBUG:
 #     SECURE_HSTS_PRELOAD = True
 #
 # ============================================================
+
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE",
+    "config.settings",
+)
+
+application = get_wsgi_application()
