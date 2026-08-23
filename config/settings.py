@@ -32,12 +32,12 @@ DEBUG = os.getenv(
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    ".onrender.com",
+    "barberagenda26.onrender.com",
     "app.barberagenda.com.br",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
+    "https://barberagenda26.onrender.com",
     "https://app.barberagenda.com.br",
 ]
 
@@ -52,10 +52,7 @@ if RENDER_EXTERNAL_HOSTNAME:
     )
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
-    "https://app.barberagenda.com.br",
-]
+
 
 
 # ============================================================
@@ -380,3 +377,12 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
+# Permite também configurar hosts extras pelo Render
+extra_hosts = os.getenv("ALLOWED_HOSTS", "")
+if extra_hosts:
+    ALLOWED_HOSTS += [
+        host.strip()
+        for host in extra_hosts.split(",")
+        if host.strip()
+    ]
