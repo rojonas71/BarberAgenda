@@ -70,7 +70,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Projeto
     "apps.accounts.apps.AccountsConfig",
     "apps.barbershops.apps.BarbershopsConfig",
     "apps.professionals.apps.ProfessionalsConfig",
@@ -79,12 +78,17 @@ INSTALLED_APPS = [
     "apps.customers.apps.CustomersConfig",
     "apps.dashboard.apps.DashboardConfig",
 
-    # SaaS
     "apps.core.apps.CoreConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
-
-    # Super Admin
     "apps.saas_admin.apps.SaasAdminConfig",
+
+    # deixe SOMENTE esta linha para public
+    "apps.public.apps.PublicConfig",
+]
+
+AUTHENTICATION_BACKENDS = [
+    "apps.accounts.backends.EmailOrUsernameBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 
@@ -133,10 +137,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 TEMPLATES = [
     {
-        "BACKEND": (
-            "django.template.backends.django."
-            "DjangoTemplates"
-        ),
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
 
         "DIRS": [
             BASE_DIR / "templates",
@@ -146,18 +147,9 @@ TEMPLATES = [
 
         "OPTIONS": {
             "context_processors": [
-                (
-                    "django.template.context_processors."
-                    "request"
-                ),
-                (
-                    "django.contrib.auth."
-                    "context_processors.auth"
-                ),
-                (
-                    "django.contrib.messages."
-                    "context_processors.messages"
-                ),
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },

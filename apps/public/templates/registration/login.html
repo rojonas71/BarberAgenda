@@ -1,103 +1,367 @@
 {% extends "public/base_public.html" %}
 
 {% block title %}
-Entrar
+Entrar | BarberAgenda
 {% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-page {
+        min-height: calc(100vh - 72px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+
+        background:
+            radial-gradient(
+                circle at top,
+                rgba(212, 175, 55, .10),
+                transparent 38%
+            );
+    }
+
+    .login-wrapper {
+        width: 100%;
+        max-width: 460px;
+    }
+
+    .login-header {
+        margin-bottom: 26px;
+        text-align: center;
+    }
+
+    .login-icon {
+        width: 58px;
+        height: 58px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 18px;
+
+        border: 1px solid rgba(212, 175, 55, .25);
+        border-radius: 16px;
+
+        background: rgba(212, 175, 55, .08);
+
+        font-size: 27px;
+    }
+
+    .login-header h1 {
+        margin: 0 0 10px;
+        font-size: 34px;
+        letter-spacing: -1px;
+    }
+
+    .login-header p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+    }
+
+    .login-card {
+        padding: 32px;
+
+        border: 1px solid var(--border);
+        border-radius: 18px;
+
+        background:
+            linear-gradient(
+                180deg,
+                #181818,
+                var(--card)
+            );
+
+        box-shadow:
+            0 30px 80px rgba(0, 0, 0, .35);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .form-input {
+        width: 100%;
+        min-height: 48px;
+
+        padding: 11px 13px;
+
+        border: 1px solid #303030;
+        border-radius: 9px;
+
+        background: #101010;
+        color: white;
+
+        font-size: 14px;
+        outline: none;
+    }
+
+    .form-input:focus {
+        border-color: var(--gold);
+
+        box-shadow:
+            0 0 0 3px rgba(212, 175, 55, .10);
+    }
+
+    .login-button {
+        width: 100%;
+        min-height: 48px;
+
+        margin-top: 5px;
+
+        font-size: 14px;
+    }
+
+    .error-box {
+        margin-bottom: 20px;
+        padding: 13px 15px;
+
+        border: 1px solid rgba(239, 68, 68, .25);
+        border-radius: 9px;
+
+        background: rgba(239, 68, 68, .08);
+        color: #fca5a5;
+
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .login-options {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        margin-bottom: 20px;
+    }
+
+    .forgot-password {
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        margin: 24px 0;
+
+        color: #666;
+
+        font-size: 11px;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+
+        height: 1px;
+
+        background: var(--border);
+    }
+
+    .register-link {
+        text-align: center;
+
+        color: var(--muted);
+
+        font-size: 13px;
+    }
+
+    .register-link a {
+        color: var(--gold);
+        font-weight: 800;
+    }
+
+    .back-home {
+        display: block;
+
+        margin-top: 20px;
+
+        text-align: center;
+
+        color: #777;
+
+        font-size: 12px;
+    }
+
+    @media(max-width: 520px) {
+        .login-card {
+            padding: 25px 20px;
+        }
+
+        .login-header h1 {
+            font-size: 29px;
+        }
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
 
-<section class="section">
+<section class="login-page">
 
-    <div
-        class="container"
-        style="max-width:480px;"
-    >
+    <div class="login-wrapper">
 
-        <div class="section-title">
+        <div class="login-header">
 
-            <h2>
-                Entrar
-            </h2>
+            <div class="login-icon">
+                💈
+            </div>
+
+            <h1>
+                Bem-vindo de volta
+            </h1>
 
             <p>
-                Acesse o painel
-                da sua barbearia.
+                Entre na sua conta para gerenciar
+                sua barbearia.
             </p>
 
         </div>
 
 
-        <div class="card">
+        <div class="login-card">
+
+            {% if form.errors %}
+
+                <div class="error-box">
+                    Usuário ou senha incorretos.
+                    Verifique seus dados e tente novamente.
+                </div>
+
+            {% endif %}
+
+
+            {% if next and user.is_authenticated %}
+
+                <div class="error-box">
+                    Sua conta não possui permissão
+                    para acessar esta página.
+                </div>
+
+            {% endif %}
+
 
             <form method="post">
 
                 {% csrf_token %}
 
-                {% if form.errors %}
-
-                    <div
-                        style="
-                            color:#f87171;
-                            margin-bottom:18px;
-                        "
-                    >
-                        Usuário ou senha incorretos.
-                    </div>
-
-                {% endif %}
-
 
                 <div class="form-group">
 
-                    <label>
+                    <label
+                        for="id_username"
+                        class="form-label"
+                    >
                         Usuário
                     </label>
 
-                    {{ form.username }}
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        class="form-input"
+                        placeholder="Digite seu usuário"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
 
                 </div>
 
 
                 <div class="form-group">
 
-                    <label>
+                    <label
+                        for="id_password"
+                        class="form-label"
+                    >
                         Senha
                     </label>
 
-                    {{ form.password }}
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        class="form-input"
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
 
                 </div>
+
+
+                <div class="login-options">
+
+                    <a
+                        href="{% url 'password_reset' %}"
+                        class="forgot-password"
+                    >
+                        Esqueci minha senha
+                    </a>
+
+                </div>
+
+
+                {% if next %}
+                    <input
+                        type="hidden"
+                        name="next"
+                        value="{{ next }}"
+                    >
+                {% endif %}
 
 
                 <button
                     type="submit"
-                    class="btn"
-                    style="width:100%;"
+                    class="btn login-button"
                 >
-                    Entrar
+                    Entrar no BarberAgenda
                 </button>
 
             </form>
 
 
-            <p
-                style="
-                    text-align:center;
-                    margin-top:20px;
-                    color:var(--muted);
-                "
-            >
-                Ainda não tem conta?
+            <div class="divider">
+                NOVO POR AQUI?
+            </div>
 
-                <a
-                    href="{% url 'public:register' %}"
-                    style="color:var(--gold);"
-                >
-                    Criar conta
+
+            <div class="register-link">
+
+                Ainda não possui uma conta?
+
+                <a href="{% url 'public:register' %}">
+                    Criar conta grátis
                 </a>
-            </p>
+
+            </div>
 
         </div>
+
+
+        <a
+            href="{% url 'public:home' %}"
+            class="back-home"
+        >
+            ← Voltar para o início
+        </a>
 
     </div>
 

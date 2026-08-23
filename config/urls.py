@@ -5,41 +5,44 @@ from django.urls import include, path
 
 
 urlpatterns = [
+    # SITE PÚBLICO
     path(
         "",
-        include("apps.public.urls"),
+        include(
+            ("apps.public.urls", "public"),
+            namespace="public",
+        ),
     ),
 
+    # LOGIN / SENHA
     path(
         "accounts/",
         include("django.contrib.auth.urls"),
     ),
 
+    # DASHBOARD
     path(
         "dashboard/",
         include("apps.dashboard.urls"),
     ),
 
+    # AGENDAMENTO PÚBLICO
     path(
         "b/",
         include("apps.bookings.urls"),
     ),
 
-    path(
-        "onboarding/",
-        include("apps.onboarding.urls"),
-    ),
-
+    # SUPER ADMIN
     path(
         "super-admin/",
         include("apps.saas_admin.urls"),
     ),
 
+    # ADMIN DJANGO
     path(
         "admin/",
         admin.site.urls,
     ),
-    
 ]
 
 

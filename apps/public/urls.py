@@ -9,8 +9,14 @@ app_name = "public"
 urlpatterns = [
     path(
         "",
-        views.landing_page,
+        views.home,
         name="home",
+    ),
+
+    path(
+        "planos/",
+        views.plans,
+        name="plans",
     ),
 
     path(
@@ -20,8 +26,20 @@ urlpatterns = [
     ),
 
     path(
-        "planos/",
-        views.plans,
-        name="plans",
+        "pos-login/",
+        views.after_login,
+        name="after_login",
+    ),
+
+    path(
+        "termos/",
+        views.terms,
+        name="terms",
+    ),
+
+    path(
+        "privacidade/",
+        views.privacy,
+        name="privacy",
     ),
 ]

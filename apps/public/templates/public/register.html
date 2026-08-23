@@ -1,50 +1,242 @@
 {% extends "public/base_public.html" %}
 
 {% block title %}
-Criar conta
+Criar conta | BarberAgenda
 {% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .register-page {
+        min-height:
+            calc(100vh - 72px);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 60px 20px;
+
+        background:
+            radial-gradient(
+                circle at top,
+                rgba(212, 175, 55, .10),
+                transparent 38%
+            );
+    }
+
+    .register-wrapper {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .register-header {
+        margin-bottom: 26px;
+
+        text-align: center;
+    }
+
+    .register-header .badge {
+        display: inline-flex;
+
+        margin-bottom: 15px;
+
+        padding: 7px 12px;
+
+        border-radius: 999px;
+
+        background:
+            rgba(212, 175, 55, .10);
+
+        color: var(--gold);
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: .7px;
+    }
+
+    .register-header h1 {
+        margin: 0 0 10px;
+
+        font-size: 34px;
+
+        letter-spacing: -1px;
+    }
+
+    .register-header p {
+        margin: 0;
+
+        color: var(--muted);
+
+        line-height: 1.6;
+    }
+
+    .register-card {
+        padding: 32px;
+
+        border: 1px solid var(--border);
+
+        border-radius: 18px;
+
+        background:
+            linear-gradient(
+                180deg,
+                #181818,
+                var(--card)
+            );
+
+        box-shadow:
+            0 30px 80px
+            rgba(0, 0, 0, .35);
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    input {
+        width: 100%;
+
+        min-height: 46px;
+
+        padding: 11px 13px;
+
+        border: 1px solid #303030;
+
+        border-radius: 9px;
+
+        background: #101010;
+
+        color: white;
+
+        outline: none;
+    }
+
+    input:focus {
+        border-color: var(--gold);
+
+        box-shadow:
+            0 0 0 3px
+            rgba(212, 175, 55, .10);
+    }
+
+    .helptext {
+        display: block;
+
+        margin-top: 6px;
+
+        color: #707070;
+
+        font-size: 11px;
+
+        line-height: 1.5;
+    }
+
+    ul.errorlist {
+        margin: 0 0 8px;
+        padding: 0;
+
+        list-style: none;
+
+        color: #f87171;
+
+        font-size: 12px;
+    }
+
+    .register-button {
+        width: 100%;
+
+        margin-top: 8px;
+
+        min-height: 48px;
+    }
+
+    .trial-info {
+        margin-top: 18px;
+
+        padding: 12px;
+
+        border: 1px solid
+            rgba(212, 175, 55, .18);
+
+        border-radius: 10px;
+
+        background:
+            rgba(212, 175, 55, .05);
+
+        color: #d7cba7;
+
+        text-align: center;
+
+        font-size: 12px;
+    }
+
+    .login-text {
+        margin-top: 22px;
+
+        text-align: center;
+
+        color: var(--muted);
+
+        font-size: 13px;
+    }
+
+    .login-text a {
+        color: var(--gold);
+        font-weight: 800;
+    }
+
+</style>
+
+{% endblock %}
+
 
 {% block content %}
 
-<section class="section">
+<section class="register-page">
 
-    <div
-        class="container"
-        style="
-            max-width:520px;
-        "
-    >
+    <div class="register-wrapper">
 
-        <div class="section-title">
+        <div class="register-header">
 
-            <h2>
+            <div class="badge">
+                💈 TESTE GRÁTIS
+            </div>
+
+            <h1>
                 Crie sua conta
-            </h2>
+            </h1>
 
             <p>
-                Comece seu período
-                de teste grátis.
+                Comece a organizar sua barbearia
+                com o BarberAgenda.
             </p>
 
         </div>
 
 
-        <div class="card">
+        <div class="register-card">
 
             <form method="post">
 
                 {% csrf_token %}
 
+
                 {% if form.non_field_errors %}
 
-                    <div
-                        style="
-                            color:#f87171;
-                            margin-bottom:18px;
-                        "
-                    >
-                        {{ form.non_field_errors }}
-                    </div>
+                    {{ form.non_field_errors }}
 
                 {% endif %}
 
@@ -59,19 +251,22 @@ Criar conta
                             {{ field.label }}
                         </label>
 
+
                         {{ field }}
+
+
+                        {% if field.help_text %}
+
+                            <span class="helptext">
+                                {{ field.help_text }}
+                            </span>
+
+                        {% endif %}
+
 
                         {% if field.errors %}
 
-                            <div
-                                style="
-                                    color:#f87171;
-                                    margin-top:6px;
-                                    font-size:13px;
-                                "
-                            >
-                                {{ field.errors }}
-                            </div>
+                            {{ field.errors }}
 
                         {% endif %}
 
@@ -82,13 +277,35 @@ Criar conta
 
                 <button
                     type="submit"
-                    class="btn"
-                    style="width:100%;"
+                    class="btn register-button"
                 >
                     Criar minha conta
                 </button>
 
             </form>
+
+
+            <div class="trial-info">
+
+                ✓ {{ trial_days|default:7 }}
+                dias grátis
+
+                &nbsp;•&nbsp;
+
+                Sem cartão para começar
+
+            </div>
+
+
+            <div class="login-text">
+
+                Já possui uma conta?
+
+                <a href="{% url 'login' %}">
+                    Entrar
+                </a>
+
+            </div>
 
         </div>
 

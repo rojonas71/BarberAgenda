@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        BarberAgenda
+    </title>
+
+    <style>
+        :root {
+            --bg: #090909;
+            --card: #151515;
+            --border: #292929;
+
+            --text: #ffffff;
+            --muted: #9a9a9a;
+
+            --gold: #d4af37;
+            --gold-dark: #9f7d1c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1180px, 92%);
+            margin: 0 auto;
+        }
+
+        .header {
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .navbar {
+            min-height: 74px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+        .logo {
+            color: white;
+
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav-actions {
+            display: flex;
+
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 42px;
+
+            padding:
+                10px 18px;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--gold),
+                    var(--gold-dark)
+                );
+
+            color: #050505;
+
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .btn-secondary {
+            border:
+                1px solid var(--border);
+
+            background: #151515;
+
+            color: white;
+        }
+
+        .hero {
+            padding:
+                120px 0;
+        }
+
+        .hero-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.1fr .9fr;
+
+            gap: 60px;
+
+            align-items: center;
+        }
+
+        .eyebrow {
+            color: var(--gold);
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: 1.4px;
+        }
+
+        h1 {
+            margin:
+                18px 0;
+
+            font-size:
+                clamp(
+                    46px,
+                    7vw,
+                    76px
+                );
+
+            line-height: .98;
+
+            letter-spacing:
+                -3px;
+        }
+
+        h1 span {
+            color: var(--gold);
+        }
+
+        .description {
+            max-width: 650px;
+
+            color: var(--muted);
+
+            font-size: 18px;
+
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+
+            margin-top: 30px;
+        }
+
+        .preview {
+            padding: 26px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #181818,
+                    #101010
+                );
+        }
+
+        .preview h2 {
+            margin-top: 0;
+        }
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 18px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            background: #111;
+        }
+
+        .stat span {
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        .stat strong {
+            display: block;
+
+            margin-top: 8px;
+
+            font-size: 28px;
+        }
+
+        @media(max-width: 850px) {
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="container navbar">
+
+        <a
+            href="/"
+            class="logo"
+        >
+            Barber<span>Agenda</span>
+        </a>
+
+
+        <div class="nav-actions">
+
+            <a
+                href="{% url 'login' %}"
+                class="btn btn-secondary"
+            >
+                Entrar
+            </a>
+
+            <a
+                href="/cadastro/"
+                class="btn"
+            >
+                Começar grátis
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="hero">
+
+        <div class="container hero-grid">
+
+            <div>
+
+                <div class="eyebrow">
+                    💈 SISTEMA PARA BARBEARIAS
+                </div>
+
+                <h1>
+                    Sua agenda.
+
+                    <span>
+                        Sua barbearia organizada.
+                    </span>
+                </h1>
+
+                <p class="description">
+
+                    Gerencie agendamentos,
+                    clientes, profissionais,
+                    serviços e horários em
+                    um único sistema.
+
+                </p>
+
+
+                <div class="hero-actions">
+
+                    <a
+                        href="/cadastro/"
+                        class="btn"
+                    >
+                        Começar grátis por 7 dias
+                    </a>
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="btn btn-secondary"
+                    >
+                        Já tenho conta
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="preview">
+
+                <h2>
+                    BarberAgenda
+                </h2>
+
+                <p style="color:var(--muted);">
+                    Visão geral da sua barbearia
+                </p>
+
+
+                <div class="stats">
+
+                    <div class="stat">
+
+                        <span>
+                            Agendamentos hoje
+                        </span>
+
+                        <strong>
+                            18
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <span>
+                            Clientes
+                        </span>
+
+                        <strong>
+                            284
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <span>
+                            Profissionais
+                        </span>
+
+                        <strong>
+                            5
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <span>
+                            Faturamento
+                        </span>
+
+                        <strong>
+                            R$ 980
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>
