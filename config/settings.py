@@ -21,13 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
-    "dev-only-secret"
+    "django-insecure-dev-only-change-me",
 )
+
 
 DEBUG = os.getenv(
     "DEBUG",
-    "True"
+    "True",
 ).lower() == "true"
+
+
+# ============================================================
+# HOSTS
+# ============================================================
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -36,30 +42,69 @@ ALLOWED_HOSTS = [
     "app.barberagenda.com.br",
 ]
 
+
+# Host automático disponibilizado pelo Render
+RENDER_EXTERNAL_HOSTNAME = os.getenv(
+    "RENDER_EXTERNAL_HOSTNAME"
+)
+
+if (
+    RENDER_EXTERNAL_HOSTNAME
+    and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS
+):
+    ALLOWED_HOSTS.append(
+        RENDER_EXTERNAL_HOSTNAME
+    )
+
+
+# Permite adicionar outros hosts por variável de ambiente.
+#
+# Exemplo:
+# ALLOWED_HOSTS=barberagenda26.onrender.com,app.barberagenda.com.br
+#
+EXTRA_ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "",
+)
+
+if EXTRA_ALLOWED_HOSTS:
+    for host in EXTRA_ALLOWED_HOSTS.split(","):
+        host = host.strip()
+
+        if (
+            host
+            and host not in ALLOWED_HOSTS
+        ):
+            ALLOWED_HOSTS.append(host)
+
+
+# ============================================================
+# CSRF
+# ============================================================
+
 CSRF_TRUSTED_ORIGINS = [
     "https://barberagenda26.onrender.com",
     "https://app.barberagenda.com.br",
 ]
 
 
-RENDER_EXTERNAL_HOSTNAME = os.getenv(
-    "RENDER_EXTERNAL_HOSTNAME"
-)
-
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(
-        RENDER_EXTERNAL_HOSTNAME
+    render_origin = (
+        f"https://{RENDER_EXTERNAL_HOSTNAME}"
     )
 
-
-
+    if render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(
+            render_origin
+        )
 
 
 # ============================================================
-# APPS
+# APLICAÇÕES
 # ============================================================
 
 INSTALLED_APPS = [
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -67,6 +112,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    # BarberAgenda
     "apps.accounts.apps.AccountsConfig",
     "apps.barbershops.apps.BarbershopsConfig",
     "apps.professionals.apps.ProfessionalsConfig",
@@ -75,13 +121,21 @@ INSTALLED_APPS = [
     "apps.customers.apps.CustomersConfig",
     "apps.dashboard.apps.DashboardConfig",
 
+    # Micro SaaS
     "apps.core.apps.CoreConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
+
+    # Super Admin
     "apps.saas_admin.apps.SaasAdminConfig",
 
-    # deixe SOMENTE esta linha para public
+    # Área pública
     "apps.public.apps.PublicConfig",
 ]
+
+
+# ============================================================
+# AUTENTICAÇÃO
+# ============================================================
 
 AUTHENTICATION_BACKENDS = [
     "apps.accounts.backends.EmailOrUsernameBackend",
@@ -95,6 +149,9 @@ AUTHENTICATION_BACKENDS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+
+    # WhiteNoise deve ficar logo depois
+    # do SecurityMiddleware.
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -102,6 +159,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
 
+    # BarberAgenda
     "apps.core.middleware.CurrentBarbershopMiddleware",
 
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -109,23 +167,11 @@ MIDDLEWARE = [
 ]
 
 
-# IMPORTANTE:
-# NÃO coloque AppConfig dentro do MIDDLEWARE.
-#
-# ERRADO:
-#
-# "apps.subscriptions.apps.SubscriptionsConfig"
-# "apps.onboarding.apps.OnboardingConfig"
-# "apps.saas_admin.apps.SaasAdminConfig"
-
-
 # ============================================================
-# URLS / WSGI
+# URLS
 # ============================================================
 
 ROOT_URLCONF = "config.urls"
-
-WSGI_APPLICATION = "config.wsgi.application"
 
 
 # ============================================================
@@ -134,7 +180,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "BACKEND": (
+            "django.template.backends.django."
+            "DjangoTemplates"
+        ),
 
         "DIRS": [
             BASE_DIR / "templates",
@@ -144,9 +193,18 @@ TEMPLATES = [
 
         "OPTIONS": {
             "context_processors": [
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+                (
+                    "django.template."
+                    "context_processors.request"
+                ),
+                (
+                    "django.contrib.auth."
+                    "context_processors.auth"
+                ),
+                (
+                    "django.contrib.messages."
+                    "context_processors.messages"
+                ),
             ],
         },
     },
@@ -154,15 +212,28 @@ TEMPLATES = [
 
 
 # ============================================================
+# WSGI
+# ============================================================
+
+WSGI_APPLICATION = "config.wsgi.application"
+
+
+# ============================================================
 # DATABASE
 # ============================================================
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-import os
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "",
+).strip()
 
 
 if DATABASE_URL:
+
+    # --------------------------------------------------------
+    # PRODUÇÃO / RENDER
+    # --------------------------------------------------------
+
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -170,13 +241,20 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
+
 else:
+
+    # --------------------------------------------------------
+    # DESENVOLVIMENTO LOCAL / WINDOWS
+    # --------------------------------------------------------
+
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
 
 # ============================================================
 # PASSWORD VALIDATION
@@ -231,13 +309,16 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Caso você tenha uma pasta /static na raiz
+
 STATICFILES_DIRS = []
 
-if (BASE_DIR / "static").exists():
+STATIC_SOURCE_DIR = BASE_DIR / "static"
+
+if STATIC_SOURCE_DIR.exists():
     STATICFILES_DIRS.append(
-        BASE_DIR / "static"
+        STATIC_SOURCE_DIR
     )
+
 
 STORAGES = {
     "staticfiles": {
@@ -248,8 +329,9 @@ STORAGES = {
     },
 }
 
+
 # ============================================================
-# MEDIA
+# MEDIA / UPLOADS
 # ============================================================
 
 MEDIA_URL = "/media/"
@@ -263,9 +345,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 LOGIN_URL = "login"
 
-LOGIN_REDIRECT_URL = "dashboard:home"
+LOGIN_REDIRECT_URL = "public:after_login"
 
-LOGOUT_REDIRECT_URL = "login"
+LOGOUT_REDIRECT_URL = "public:home"
 
 
 # ============================================================
@@ -288,101 +370,63 @@ DEFAULT_AUTO_FIELD = (
 
 
 # ============================================================
-# SEGURANÇA EM PRODUÇÃO
+# SESSÕES
+# ============================================================
+
+SESSION_COOKIE_HTTPONLY = True
+
+CSRF_COOKIE_HTTPONLY = False
+
+
+# ============================================================
+# SEGURANÇA DE PRODUÇÃO
 # ============================================================
 
 if not DEBUG:
 
-    SECURE_SSL_REDIRECT = True
-
-    SESSION_COOKIE_SECURE = True
-
-    CSRF_COOKIE_SECURE = True
-
+    # Render recebe HTTPS por proxy.
     SECURE_PROXY_SSL_HEADER = (
         "HTTP_X_FORWARDED_PROTO",
         "https",
     )
 
-    X_FRAME_OPTIONS = "DENY"
+    # Força HTTPS
+    SECURE_SSL_REDIRECT = True
 
+    # Cookies somente via HTTPS
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    # Segurança adicional
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
     SECURE_REFERRER_POLICY = (
         "strict-origin-when-cross-origin"
     )
 
-
-DEBUG = os.getenv(
-    "DEBUG",
-    "True",
-).lower() == "true"
+    X_FRAME_OPTIONS = "DENY"
 
 
-SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-    "dev-only-secret",
-)
-
-
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    ".elasticbeanstalk.com",
-    "app.barberagenda.com.br",
-]
-
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://app.barberagenda.com.br",
-]
-
-if os.getenv("RDS_HOSTNAME"):
-
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-
-            "NAME": os.getenv(
-                "RDS_DB_NAME",
-                "postgres",
-            ),
-
-            "USER": os.getenv(
-                "RDS_USERNAME",
-            ),
-
-            "PASSWORD": os.getenv(
-                "RDS_PASSWORD",
-            ),
-
-            "HOST": os.getenv(
-                "RDS_HOSTNAME",
-            ),
-
-            "PORT": os.getenv(
-                "RDS_PORT",
-                "5432",
-            ),
-
-            "CONN_MAX_AGE": 600,
-        }
-    }
-
-else:
-
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
-
-# Permite também configurar hosts extras pelo Render
-extra_hosts = os.getenv("ALLOWED_HOSTS", "")
-if extra_hosts:
-    ALLOWED_HOSTS += [
-        host.strip()
-        for host in extra_hosts.split(",")
-        if host.strip()
-    ]
+# ============================================================
+# PRODUÇÃO - HSTS
+# ============================================================
+#
+# Não habilite HSTS permanente imediatamente.
+#
+# Depois que:
+#
+# https://barberagenda26.onrender.com
+#
+# e
+#
+# https://app.barberagenda.com.br
+#
+# estiverem funcionando perfeitamente,
+# você poderá habilitar:
+#
+# if not DEBUG:
+#     SECURE_HSTS_SECONDS = 31536000
+#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#     SECURE_HSTS_PRELOAD = True
+#
+# ============================================================
